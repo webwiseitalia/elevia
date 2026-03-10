@@ -807,10 +807,6 @@ function Contatti() {
         position: 'absolute', top: '-200px', left: '-200px', width: '600px', height: '600px', pointerEvents: 'none',
         background: 'radial-gradient(circle, rgba(184,164,106,0.05) 0%, transparent 60%)',
       }} />
-      <div style={{ position: 'absolute', right: '-80px', bottom: '-80px', opacity: 0.02, pointerEvents: 'none' }}>
-        <img src={monogrammaBianco} alt="" style={{ width: '500px', height: '500px' }} />
-      </div>
-
       <div style={{ position: 'relative', zIndex: 1, padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 'clamp(48px, 5vw, 80px)' }}>
@@ -921,9 +917,6 @@ function Footer() {
 
   return (
     <footer style={{ backgroundColor: '#0a1118', position: 'relative', overflow: 'hidden' }}>
-      {/* Monogramma decorativo di sfondo */}
-      <img src={monogrammaBianco} alt="" style={{ position: 'absolute', right: '-60px', top: '50%', transform: 'translateY(-50%)', height: '400px', opacity: 0.015, pointerEvents: 'none' }} />
-
       {/* Linea oro in alto */}
       <div style={{ height: '1px', background: `linear-gradient(90deg, transparent, rgba(184,164,106,0.3), transparent)` }} />
 
