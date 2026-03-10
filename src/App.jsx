@@ -28,6 +28,28 @@ const C = {
 }
 
 /* ═══════════════════════════════════════════
+   ANGLE DIVIDER — Taglio obliquo tra sezioni
+   ═══════════════════════════════════════════ */
+function AngleDivider({ from, to, flip = false, height = 80 }) {
+  return (
+    <div style={{ position: 'relative', height: `clamp(40px, 5vw, ${height}px)`, marginTop: '-1px', overflow: 'hidden', zIndex: 2 }}>
+      <svg
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'block' }}
+      >
+        {flip ? (
+          <polygon points="0,0 1440,0 1440,100 0,30" fill={to} />
+        ) : (
+          <polygon points="0,0 1440,0 1440,70 0,100" fill={to} />
+        )}
+      </svg>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: from, zIndex: -1 }} />
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════
    CTA Button
    ═══════════════════════════════════════════ */
 function CTAButton({ href = '#contatti', children = 'Prenota una Call Gratuita', variant = 'gold', large = false }) {
@@ -1046,11 +1068,16 @@ function App() {
     <>
       <Navbar />
       <Hero />
+      <AngleDivider from={C.navy} to={C.anthracite} />
       <SocialProof />
+      <AngleDivider from={C.anthracite} to={C.warmwhite} flip />
       <ComeFunziona />
+      <AngleDivider from={C.warmwhite} to={C.navy} />
       <PercheElevia />
       <TrustStrip />
+      <AngleDivider from={C.navy} to={C.warmwhite} flip />
       <FAQ />
+      <AngleDivider from={C.warmwhite} to={C.navy} />
       <Contatti />
       <Footer />
     </>
