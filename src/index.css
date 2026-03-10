@@ -58,6 +58,27 @@ textarea::placeholder {
   color: rgba(247, 246, 243, 0.2) !important;
 }
 
+/* ── Hero animations ── */
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: translate(var(--tx, -50%), var(--ty, -50%)) scale(0); }
+  50% { opacity: 0.8; transform: translate(var(--tx, -50%), var(--ty, -50%)) scale(1); }
+}
+
+@keyframes heroShake {
+  0% { transform: translate(0, 0); }
+  15% { transform: translate(-6px, 4px); }
+  30% { transform: translate(5px, -3px); }
+  45% { transform: translate(-4px, 2px); }
+  60% { transform: translate(3px, -2px); }
+  75% { transform: translate(-2px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
 /* ── Scrollbar styling ── */
 ::-webkit-scrollbar {
   width: 4px;

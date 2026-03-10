@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ShieldCheck, Eye, Building2, Handshake, Mail, Phone, MapPin, ArrowUpRight, Linkedin, Instagram } from 'lucide-react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import Lenis from '@studio-freight/lenis'
 
 import logoBeige from './assets/loghi/logo beige senza sfondo.svg'
@@ -14,7 +16,7 @@ import foto3 from './assets/foto/foto-3.webp'
 import foto4 from './assets/foto/foto-4.webp'
 import foto7 from './assets/foto/foto-7.webp'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin)
 
 /* ── Colori (hardcoded per sicurezza) ── */
 const C = {
@@ -118,18 +120,18 @@ function Navbar() {
   return (
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-      padding: scrolled ? '12px 0' : '20px 0',
+      padding: scrolled ? '14px 0' : '24px 0',
       backgroundColor: scrolled ? 'rgba(14,27,42,0.95)' : 'transparent',
       backdropFilter: scrolled ? 'blur(20px)' : 'none',
       transition: 'all 0.5s',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 clamp(24px, 5vw, 80px)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 clamp(32px, 5vw, 80px)' }}>
         <a href="#">
-          <img src={logoBeige} alt="ELEVIA" style={{ height: scrolled ? '28px' : '36px', transition: 'height 0.5s' }} />
+          <img src={logoBeige} alt="ELEVIA" style={{ height: scrolled ? '52px' : '72px', transition: 'height 0.5s' }} />
         </a>
 
         {/* Desktop links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }} className="nav-desktop">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '48px' }} className="nav-desktop">
           {links.map(link => (
             <a
               key={link.href}
@@ -215,11 +217,272 @@ function Navbar() {
 }
 
 /* ═══════════════════════════════════════════
-   HERO — Vuota, sfondo navy, spazio per animazione
+   HERO — Frecce-aeroplanini dal basso, distorte,
+   si compongono dall'alto verso il basso
    ═══════════════════════════════════════════ */
+
 function Hero() {
+  const [phase, setPhase] = useState(0)
+  const svgRef = useRef(null)
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setPhase(1), 600),    // freccia TOP decolla dal basso
+      setTimeout(() => setPhase(2), 1400),   // freccia CENTRO decolla dal basso
+      setTimeout(() => setPhase(3), 2200),   // freccia BOTTOM decolla dal basso
+      setTimeout(() => setPhase(4), 3600),   // logo diventa gold
+      setTimeout(() => setPhase(5), 4400),   // tagline + scroll
+    ]
+    return () => timers.forEach(clearTimeout)
+  }, [])
+
+  // Griglia animata di sfondo
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let animId
+    let time = 0
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * 2
+      canvas.height = canvas.offsetHeight * 2
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const draw = () => {
+      time += 0.005
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const lineCount = 15
+      for (let i = 0; i < lineCount; i++) {
+        const y = (canvas.height / lineCount) * i + Math.sin(time + i * 0.5) * 20
+        const alpha = 0.02 + Math.sin(time + i) * 0.01
+        ctx.strokeStyle = `rgba(184, 164, 106, ${Math.max(0, alpha)})`
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.moveTo(0, y)
+        ctx.lineTo(canvas.width, y)
+        ctx.stroke()
+      }
+      const vlineCount = 10
+      for (let i = 0; i < vlineCount; i++) {
+        const x = (canvas.width / vlineCount) * i + Math.cos(time + i * 0.7) * 15
+        const alpha = 0.015 + Math.cos(time + i) * 0.008
+        ctx.strokeStyle = `rgba(184, 164, 106, ${Math.max(0, alpha)})`
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.moveTo(x, 0)
+        ctx.lineTo(x, canvas.height)
+        ctx.stroke()
+      }
+      animId = requestAnimationFrame(draw)
+    }
+    draw()
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  // Animazione GSAP: frecce salgono dal basso come aerei,
+  // inizialmente distorte (skew + scaleY compresso + rotazione),
+  // si raddrizzano atterrando nella posizione del logo dall'alto verso il basso
+  useEffect(() => {
+    if (!svgRef.current) return
+
+    const arrowBot = svgRef.current.querySelector('#arrow-bot')
+    const arrowMid = svgRef.current.querySelector('#arrow-mid')
+    const arrowTop = svgRef.current.querySelector('#arrow-top')
+
+    if (!arrowBot || !arrowMid || !arrowTop) return
+
+    // Stato iniziale: tutte fuori schermo in basso, distorte come in prospettiva di volo
+    gsap.set(arrowTop, {
+      opacity: 0, y: 900, x: 300,
+      scaleX: 0.3, scaleY: 0.6,
+      skewX: -25, skewY: 10,
+      rotation: -15,
+      transformOrigin: 'center center',
+    })
+    gsap.set(arrowMid, {
+      opacity: 0, y: 900, x: 200,
+      scaleX: 0.3, scaleY: 0.6,
+      skewX: -25, skewY: 10,
+      rotation: -15,
+      transformOrigin: 'center center',
+    })
+    gsap.set(arrowBot, {
+      opacity: 0, y: 900, x: 100,
+      scaleX: 0.3, scaleY: 0.6,
+      skewX: -25, skewY: 10,
+      rotation: -15,
+      transformOrigin: 'center center',
+    })
+
+    const tl = gsap.timeline({ delay: 0.6 })
+
+    // Funzione per creare l'animazione di volo per ogni freccia
+    const flyIn = (arrow, delay) => {
+      // Fase 1: appare e inizia a salire, ancora distorta
+      tl.to(arrow, {
+        opacity: 1,
+        y: 400,
+        x: 150,
+        scaleX: 0.5, scaleY: 0.7,
+        skewX: -15, skewY: 6,
+        rotation: -8,
+        duration: 0.5,
+        ease: 'power1.in',
+      }, delay)
+
+      // Fase 2: sale e inizia a raddrizzarsi
+      tl.to(arrow, {
+        y: 100,
+        x: 50,
+        scaleX: 0.8, scaleY: 0.9,
+        skewX: -5, skewY: 2,
+        rotation: -3,
+        duration: 0.4,
+        ease: 'none',
+      }, delay + 0.5)
+
+      // Fase 3: atterra nella posizione finale, completamente raddrizzata
+      tl.to(arrow, {
+        y: 0,
+        x: 0,
+        scaleX: 1, scaleY: 1,
+        skewX: 0, skewY: 0,
+        rotation: 0,
+        duration: 0.5,
+        ease: 'power2.out',
+      }, delay + 0.9)
+    }
+
+    // 1) Freccia TOP — prima a decollare, atterra in cima
+    flyIn(arrowTop, 0)
+
+    // 2) Freccia CENTRO — seconda
+    flyIn(arrowMid, 0.7)
+
+    // 3) Freccia BOTTOM — terza, completa il logo
+    flyIn(arrowBot, 1.4)
+
+    // Logo completo → transizione gold + glow
+    tl.to([arrowTop, arrowMid, arrowBot], {
+      fill: C.gold,
+      filter: 'drop-shadow(0 0 25px rgba(184,164,106,0.7))',
+      duration: 0.8,
+      ease: 'power2.inOut',
+    }, 3)
+
+    return () => tl.kill()
+  }, [])
+
   return (
-    <section id="hero" style={{ height: '100vh', minHeight: '700px', backgroundColor: C.navy }} />
+    <section id="hero" style={{
+      height: '100vh', minHeight: '700px', backgroundColor: C.navy,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      position: 'relative', overflow: 'hidden',
+    }}>
+      {/* Canvas griglia animata */}
+      <canvas ref={canvasRef} style={{
+        position: 'absolute', inset: 0, width: '100%', height: '100%',
+        opacity: 0.6,
+        pointerEvents: 'none',
+      }} />
+
+      {/* Glow radiale che appare quando il logo è completo */}
+      <div style={{
+        position: 'absolute', top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: phase >= 4 ? '800px' : '0px',
+        height: phase >= 4 ? '800px' : '0px',
+        background: 'radial-gradient(circle, rgba(184,164,106,0.1) 0%, rgba(184,164,106,0.03) 40%, transparent 70%)',
+        transition: 'all 1.5s cubic-bezier(0.16, 1, 0.3, 1)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* Logo container */}
+      <div style={{ position: 'relative', zIndex: 4, textAlign: 'center' }}>
+        {/* SVG Monogramma */}
+        <svg ref={svgRef} viewBox="0 0 1080 1080" style={{
+          width: 'clamp(200px, 28vw, 380px)',
+          height: 'clamp(200px, 28vw, 380px)',
+          overflow: 'visible',
+        }}>
+          {/* Freccia TOP */}
+          <path id="arrow-top" fill={C.warmwhite} d="M453.77,130.98l363.7,139.11c4.21,1.61,6.98,5.64,6.98,10.15v166.73c0,7.61-7.63,12.87-14.74,10.15l-360.91-138.04c-3.55-1.36-7.55-.76-10.55,1.57l-165.18,128.47c-7.14,5.55-17.53.46-17.53-8.57v-162.46c0-3.35,1.55-6.52,4.19-8.57l174.32-135.58c5.61-4.36,13.09-5.47,19.72-2.94Z"/>
+          {/* Freccia CENTRO */}
+          <path id="arrow-mid" fill={C.warmwhite} d="M448.8,375.67l223.98,85.67c4.21,1.61,6.98,5.64,6.98,10.15v166.73c0,7.61-7.63,12.87-14.74,10.15l-216.22-82.7c-3.55-1.36-7.55-.76-10.55,1.57l-165.18,128.47c-7.14,5.55-17.53.46-17.53-8.57v-162.46c0-3.35,1.55-6.52,4.19-8.57l178.52-138.85c3-2.33,7-2.93,10.55-1.57Z"/>
+          {/* Freccia BOTTOM */}
+          <path id="arrow-bot" fill={C.warmwhite} d="M448.8,621.6l368.67,141.01c4.21,1.61,6.98,5.64,6.98,10.15v166.73c0,7.61-7.63,12.87-14.74,10.15l-360.91-138.04c-3.55-1.36-7.55-.76-10.55,1.57l-165.18,128.47c-7.14,5.55-17.53.46-17.53-8.57v-162.46c0-3.35,1.55-6.52,4.19-8.57l178.52-138.85c3-2.33,7-2.93,10.55-1.57Z"/>
+        </svg>
+
+        {/* Linee decorative */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginTop: '40px' }}>
+          <div style={{
+            width: phase >= 4 ? 'clamp(40px, 8vw, 100px)' : '0px',
+            height: '1px', backgroundColor: C.gold,
+            transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+          }} />
+          <div style={{
+            width: '6px', height: '6px', borderRadius: '50%',
+            backgroundColor: C.gold,
+            opacity: phase >= 4 ? 1 : 0,
+            transform: phase >= 4 ? 'scale(1)' : 'scale(0)',
+            transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s',
+          }} />
+          <div style={{
+            width: phase >= 4 ? 'clamp(40px, 8vw, 100px)' : '0px',
+            height: '1px', backgroundColor: C.gold,
+            transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+          }} />
+        </div>
+
+        {/* Tagline */}
+        <p style={{
+          fontFamily: '"Playfair Display", serif', fontStyle: 'italic',
+          color: C.beige, fontSize: 'clamp(15px, 1.8vw, 22px)',
+          letterSpacing: '0.2em', marginTop: '28px',
+          opacity: phase >= 5 ? 1 : 0,
+          transform: phase >= 5 ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}>
+          Elevare il capitale. Con metodo.
+        </p>
+
+        {/* CTA */}
+        <div style={{
+          marginTop: '36px',
+          opacity: phase >= 5 ? 1 : 0,
+          transform: phase >= 5 ? 'translateY(0)' : 'translateY(20px)',
+          transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s',
+        }}>
+          <CTAButton large />
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div style={{
+        position: 'absolute', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
+        opacity: phase >= 5 ? 1 : 0,
+        transition: 'opacity 1s ease 0.5s',
+      }}>
+        <span style={{
+          fontFamily: 'Poppins, sans-serif', color: 'rgba(230,220,203,0.3)',
+          fontSize: '9px', letterSpacing: '0.3em', textTransform: 'uppercase',
+        }}>Scorri</span>
+        <div style={{
+          width: '1px', height: '50px',
+          background: `linear-gradient(to bottom, ${C.gold}, transparent)`,
+          animation: 'pulse 2s ease-in-out infinite',
+        }} />
+      </div>
+    </section>
   )
 }
 
@@ -235,8 +498,18 @@ function SocialProof() {
   ]
 
   return (
-    <section style={{ backgroundColor: C.anthracite, padding: 'clamp(48px, 5vw, 80px) 0' }}>
-      <div style={{ padding: '0 clamp(24px, 5vw, 80px)' }}>
+    <section style={{ backgroundColor: C.anthracite, padding: 'clamp(48px, 5vw, 80px) 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Diagonal lines texture */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.04, pointerEvents: 'none',
+        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(184,164,106,0.3) 40px, rgba(184,164,106,0.3) 41px)`,
+      }} />
+      {/* Radial glow */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(ellipse at 50% 50%, rgba(184,164,106,0.06) 0%, transparent 70%)',
+      }} />
+      <div style={{ padding: '0 clamp(24px, 5vw, 80px)', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '32px', textAlign: 'center' }}>
           {stats.map((stat, i) => (
             <div key={i}>
@@ -266,6 +539,12 @@ function ComeFunziona() {
 
   return (
     <section id="come-funziona" style={{ backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Dot grid texture */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.35, pointerEvents: 'none',
+        backgroundImage: `radial-gradient(circle, rgba(43,46,52,0.08) 1px, transparent 1px)`,
+        backgroundSize: '32px 32px',
+      }} />
       <div style={{ position: 'absolute', right: '-128px', top: '80px', opacity: 0.03, pointerEvents: 'none' }}>
         <img src={monogrammaBeige} alt="" style={{ width: '400px', height: '400px' }} />
       </div>
@@ -331,10 +610,10 @@ function ComeFunziona() {
    ═══════════════════════════════════════════ */
 function PercheElevia() {
   const benefits = [
-    { icon: '🛡️', title: 'Rischio controllato', desc: 'Non inseguiamo rendimenti fuori scala. Ogni operazione è analizzata, calcolata e protetta.' },
-    { icon: '👁️', title: 'Trasparenza totale', desc: 'Vedi tutto: costi, margini, tempistiche. Report periodici e comunicazione diretta.' },
-    { icon: '🏢', title: 'Asset reali e concreti', desc: 'Investiamo in immobili veri, non in strumenti finanziari astratti. Il tuo patrimonio è tangibile.' },
-    { icon: '🤝', title: 'Rapporto umano', desc: 'Non sei un numero. Costruiamo relazioni di fiducia, con un team sempre raggiungibile.' },
+    { icon: ShieldCheck, title: 'Rischio controllato', desc: 'Non inseguiamo rendimenti fuori scala. Ogni operazione è analizzata, calcolata e protetta.' },
+    { icon: Eye, title: 'Trasparenza totale', desc: 'Vedi tutto: costi, margini, tempistiche. Report periodici e comunicazione diretta.' },
+    { icon: Building2, title: 'Asset reali e concreti', desc: 'Investiamo in immobili veri, non in strumenti finanziari astratti. Il tuo patrimonio è tangibile.' },
+    { icon: Handshake, title: 'Rapporto umano', desc: 'Non sei un numero. Costruiamo relazioni di fiducia, con un team sempre raggiungibile.' },
   ]
 
   return (
@@ -343,6 +622,11 @@ function PercheElevia() {
       <div style={{ position: 'absolute', inset: 0, opacity: 0.08 }}>
         <img src={foto2} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>
+      {/* Cross-hatch texture */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.3, pointerEvents: 'none',
+        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 80px, rgba(184,164,106,0.03) 80px, rgba(184,164,106,0.03) 81px), repeating-linear-gradient(-45deg, transparent, transparent 80px, rgba(184,164,106,0.03) 80px, rgba(184,164,106,0.03) 81px)`,
+      }} />
 
       <div style={{ position: 'relative', zIndex: 1, padding: '0 clamp(24px, 5vw, 80px)' }}>
         {/* Header */}
@@ -357,14 +641,14 @@ function PercheElevia() {
         </div>
 
         {/* Benefits grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', maxWidth: '900px', margin: '0 auto 64px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', maxWidth: '1200px', margin: '0 auto 64px' }}>
           {benefits.map((b, i) => (
             <div key={i} style={{
               padding: 'clamp(24px, 3vw, 40px)',
               backgroundColor: 'rgba(247,246,243,0.05)', border: '1px solid rgba(247,246,243,0.1)',
               transition: 'all 0.3s',
             }}>
-              <div style={{ fontSize: '32px', marginBottom: '20px' }}>{b.icon}</div>
+              <div style={{ marginBottom: '20px' }}><b.icon size={32} color={C.gold} strokeWidth={1.5} /></div>
               <h3 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.warmwhite, fontSize: '13px', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
                 {b.title}
               </h3>
@@ -422,7 +706,12 @@ function FAQ() {
   ]
 
   return (
-    <section id="faq" style={{ backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0' }}>
+    <section id="faq" style={{ backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Horizontal lines texture */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.3, pointerEvents: 'none',
+        backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(43,46,52,0.04) 59px, rgba(43,46,52,0.04) 60px)`,
+      }} />
       <div style={{ padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '800px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 4vw, 64px)' }}>
@@ -507,6 +796,17 @@ function Contatti() {
 
   return (
     <section id="contatti" style={{ backgroundColor: C.navy, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+      {/* Grid texture */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none',
+        backgroundImage: `linear-gradient(rgba(247,246,243,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(247,246,243,0.02) 1px, transparent 1px)`,
+        backgroundSize: '64px 64px',
+      }} />
+      {/* Corner glow */}
+      <div style={{
+        position: 'absolute', top: '-200px', left: '-200px', width: '600px', height: '600px', pointerEvents: 'none',
+        background: 'radial-gradient(circle, rgba(184,164,106,0.05) 0%, transparent 60%)',
+      }} />
       <div style={{ position: 'absolute', right: '-80px', bottom: '-80px', opacity: 0.02, pointerEvents: 'none' }}>
         <img src={monogrammaBianco} alt="" style={{ width: '500px', height: '500px' }} />
       </div>
@@ -612,25 +912,131 @@ function Contatti() {
    Footer
    ═══════════════════════════════════════════ */
 function Footer() {
-  return (
-    <footer style={{ backgroundColor: '#0a1118' }}>
-      <div style={{ height: '1px', background: `linear-gradient(90deg, transparent, rgba(184,164,106,0.2), transparent)` }} />
+  const footerLinks = [
+    { label: 'Come Funziona', href: '#come-funziona' },
+    { label: 'Perché ELEVIA', href: '#perche' },
+    { label: 'FAQ', href: '#faq' },
+    { label: 'Contatti', href: '#contatti' },
+  ]
 
-      <div style={{ padding: '48px clamp(24px, 5vw, 80px)' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <img src={logoBianco} alt="ELEVIA" style={{ height: '32px', opacity: 0.4 }} />
-            <span style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', color: 'rgba(247,246,243,0.15)', fontSize: '14px' }}>"Elevare il capitale. Con metodo."</span>
+  return (
+    <footer style={{ backgroundColor: '#0a1118', position: 'relative', overflow: 'hidden' }}>
+      {/* Monogramma decorativo di sfondo */}
+      <img src={monogrammaBianco} alt="" style={{ position: 'absolute', right: '-60px', top: '50%', transform: 'translateY(-50%)', height: '400px', opacity: 0.015, pointerEvents: 'none' }} />
+
+      {/* Linea oro in alto */}
+      <div style={{ height: '1px', background: `linear-gradient(90deg, transparent, rgba(184,164,106,0.3), transparent)` }} />
+
+      {/* Contenuto principale */}
+      <div style={{ padding: 'clamp(48px, 6vw, 80px) clamp(24px, 5vw, 80px)', position: 'relative', zIndex: 1 }}>
+
+        {/* Top section: Logo + Claim */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '56px' }}>
+          <img src={logoBianco} alt="ELEVIA" style={{ height: '40px', opacity: 0.6, marginBottom: '20px' }} />
+          <p style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', color: 'rgba(184,164,106,0.4)', fontSize: 'clamp(16px, 2vw, 20px)', maxWidth: '500px', lineHeight: 1.6 }}>
+            "Elevare il capitale. Con metodo."
+          </p>
+        </div>
+
+        {/* Grid: Navigazione | Contatti | Seguici */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'clamp(32px, 4vw, 64px)', maxWidth: '900px', margin: '0 auto 56px' }}>
+
+          {/* Colonna 1: Navigazione */}
+          <div>
+            <h4 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.gold, fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px' }}>
+              Navigazione
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {footerLinks.map((link, i) => (
+                <a key={i} href={link.href} style={{ fontFamily: '"Libre Baskerville", serif', color: 'rgba(247,246,243,0.4)', fontSize: '14px', textDecoration: 'none', transition: 'color 0.3s', display: 'flex', alignItems: 'center', gap: '6px' }}
+                  onMouseEnter={e => e.currentTarget.style.color = C.gold}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(247,246,243,0.4)'}
+                >
+                  {link.label}
+                  <ArrowUpRight size={12} style={{ opacity: 0.4 }} />
+                </a>
+              ))}
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: '32px' }}>
-            <a href="#" style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.2)', fontSize: '10px', letterSpacing: '0.15em', textDecoration: 'none' }}>Privacy Policy</a>
-            <a href="#" style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.2)', fontSize: '10px', letterSpacing: '0.15em', textDecoration: 'none' }}>Cookie Policy</a>
+
+          {/* Colonna 2: Contatti */}
+          <div>
+            <h4 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.gold, fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px' }}>
+              Contatti
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <a href="tel:+398973762004" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontFamily: '"Libre Baskerville", serif', color: 'rgba(247,246,243,0.4)', fontSize: '14px', textDecoration: 'none', transition: 'color 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.color = C.gold}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(247,246,243,0.4)'}
+              >
+                <Phone size={15} strokeWidth={1.5} style={{ color: C.gold, opacity: 0.6 }} />
+                +39 897 376 2004
+              </a>
+              <a href="mailto:info@elevia.it" style={{ display: 'flex', alignItems: 'center', gap: '10px', fontFamily: '"Libre Baskerville", serif', color: 'rgba(247,246,243,0.4)', fontSize: '14px', textDecoration: 'none', transition: 'color 0.3s' }}
+                onMouseEnter={e => e.currentTarget.style.color = C.gold}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(247,246,243,0.4)'}
+              >
+                <Mail size={15} strokeWidth={1.5} style={{ color: C.gold, opacity: 0.6 }} />
+                info@elevia.it
+              </a>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontFamily: '"Libre Baskerville", serif', color: 'rgba(247,246,243,0.4)', fontSize: '14px' }}>
+                <MapPin size={15} strokeWidth={1.5} style={{ color: C.gold, opacity: 0.6, flexShrink: 0, marginTop: '3px' }} />
+                Milano, Italia
+              </div>
+            </div>
+          </div>
+
+          {/* Colonna 3: Social + CTA */}
+          <div>
+            <h4 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.gold, fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px' }}>
+              Seguici
+            </h4>
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '28px' }}>
+              {[
+                { Icon: Linkedin, href: '#' },
+                { Icon: Instagram, href: '#' },
+              ].map(({ Icon, href }, i) => (
+                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
+                  style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(184,164,106,0.2)', transition: 'all 0.3s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.gold; e.currentTarget.style.backgroundColor = 'rgba(184,164,106,0.1)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(184,164,106,0.2)'; e.currentTarget.style.backgroundColor = 'transparent' }}
+                >
+                  <Icon size={18} color={C.gold} strokeWidth={1.5} style={{ opacity: 0.6 }} />
+                </a>
+              ))}
+            </div>
+            <a href="#contatti" style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', color: C.gold, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', border: `1px solid ${C.gold}`, transition: 'all 0.3s' }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = C.gold; e.currentTarget.style.color = C.navy }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = C.gold }}
+            >
+              Parla con noi
+              <ArrowUpRight size={14} />
+            </a>
           </div>
         </div>
-        <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid rgba(247,246,243,0.05)', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.1)', fontSize: '10px', letterSpacing: '0.15em' }}>
+
+        {/* Divider */}
+        <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(247,246,243,0.06), transparent)', marginBottom: '28px' }} />
+
+        {/* Bottom bar */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+          <p style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.15)', fontSize: '10px', letterSpacing: '0.15em' }}>
             © {new Date().getFullYear()} ELEVIA Investimenti Immobiliari — Tutti i diritti riservati
           </p>
+          <div style={{ display: 'flex', gap: '24px' }}>
+            <a href="#" style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.2)', fontSize: '10px', letterSpacing: '0.12em', textDecoration: 'none', transition: 'color 0.3s' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'rgba(247,246,243,0.5)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(247,246,243,0.2)'}
+            >Privacy Policy</a>
+            <a href="#" style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.2)', fontSize: '10px', letterSpacing: '0.12em', textDecoration: 'none', transition: 'color 0.3s' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'rgba(247,246,243,0.5)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(247,246,243,0.2)'}
+            >Cookie Policy</a>
+            <a href="#" style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.2)', fontSize: '10px', letterSpacing: '0.12em', textDecoration: 'none', transition: 'color 0.3s' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'rgba(247,246,243,0.5)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(247,246,243,0.2)'}
+            >Termini e Condizioni</a>
+          </div>
         </div>
       </div>
     </footer>
