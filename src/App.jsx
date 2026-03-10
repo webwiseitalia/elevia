@@ -562,7 +562,7 @@ function ComeFunziona() {
         </div>
 
         {/* Steps */}
-        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'clamp(48px, 5vw, 80px)' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'clamp(48px, 5vw, 80px)' }}>
           {steps.map((step, i) => (
             <div key={i} className="step-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(24px, 4vw, 64px)', alignItems: 'center' }}>
               {/* Image */}
@@ -641,7 +641,7 @@ function PercheElevia() {
         </div>
 
         {/* Benefits grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', maxWidth: '1200px', margin: '0 auto 64px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', margin: '0 auto 64px' }}>
           {benefits.map((b, i) => (
             <div key={i} style={{
               padding: 'clamp(24px, 3vw, 40px)',
@@ -680,7 +680,7 @@ function TrustStrip() {
       <img src={foto7} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
       <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(14,27,42,0.7)' }} />
 
-      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '24px clamp(24px, 5vw, 80px)', maxWidth: '800px' }}>
+      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '24px clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
         <img src={monogrammaBianco} alt="" style={{ width: '56px', height: '56px', margin: '0 auto 32px', opacity: 0.3 }} />
         <blockquote style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', color: C.warmwhite, fontSize: 'clamp(1.3rem, 3vw, 2.5rem)', lineHeight: 1.3, marginBottom: '24px' }}>
           "Crescita strutturata.<br />Livello dopo livello."
@@ -712,7 +712,7 @@ function FAQ() {
         position: 'absolute', inset: 0, opacity: 0.3, pointerEvents: 'none',
         backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(43,46,52,0.04) 59px, rgba(43,46,52,0.04) 60px)`,
       }} />
-      <div style={{ padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 4vw, 64px)' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>— Domande frequenti</p>
@@ -811,7 +811,7 @@ function Contatti() {
         <img src={monogrammaBianco} alt="" style={{ width: '500px', height: '500px' }} />
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ position: 'relative', zIndex: 1, padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 'clamp(48px, 5vw, 80px)' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '24px' }}>— Inizia ora</p>
@@ -939,7 +939,7 @@ function Footer() {
         </div>
 
         {/* Grid: Navigazione | Contatti | Seguici */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'clamp(32px, 4vw, 64px)', maxWidth: '900px', margin: '0 auto 56px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'clamp(32px, 4vw, 64px)', maxWidth: '1200px', margin: '0 auto 56px' }}>
 
           {/* Colonna 1: Navigazione */}
           <div>
