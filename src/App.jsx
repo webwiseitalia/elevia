@@ -28,28 +28,6 @@ const C = {
 }
 
 /* ═══════════════════════════════════════════
-   ANGLE DIVIDER — Taglio obliquo tra sezioni
-   ═══════════════════════════════════════════ */
-function AngleDivider({ from, to, flip = false, height = 80 }) {
-  return (
-    <div style={{ position: 'relative', height: `clamp(40px, 5vw, ${height}px)`, marginTop: '-1px', overflow: 'hidden', zIndex: 2 }}>
-      <svg
-        viewBox="0 0 1440 100"
-        preserveAspectRatio="none"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'block' }}
-      >
-        {flip ? (
-          <polygon points="0,0 1440,0 1440,100 0,30" fill={to} />
-        ) : (
-          <polygon points="0,0 1440,0 1440,70 0,100" fill={to} />
-        )}
-      </svg>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: from, zIndex: -1 }} />
-    </div>
-  )
-}
-
-/* ═══════════════════════════════════════════
    CTA Button
    ═══════════════════════════════════════════ */
 function CTAButton({ href = '#contatti', children = 'Prenota una Call Gratuita', variant = 'gold', large = false }) {
@@ -408,6 +386,8 @@ function Hero() {
       height: '100vh', minHeight: '700px', backgroundColor: C.navy,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       position: 'relative', overflow: 'hidden',
+      clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 94%)',
+      marginBottom: '-50px',
     }}>
       {/* Canvas griglia animata */}
       <canvas ref={canvasRef} style={{
@@ -520,7 +500,9 @@ function SocialProof() {
   ]
 
   return (
-    <section style={{ backgroundColor: C.anthracite, padding: 'clamp(48px, 5vw, 80px) 0', position: 'relative', overflow: 'hidden' }}>
+    <section style={{
+      backgroundColor: C.anthracite, padding: 'clamp(48px, 5vw, 80px) 0', position: 'relative', overflow: 'hidden',
+    }}>
       {/* Diagonal lines texture */}
       <div style={{
         position: 'absolute', inset: 0, opacity: 0.04, pointerEvents: 'none',
@@ -560,7 +542,11 @@ function ComeFunziona() {
   ]
 
   return (
-    <section id="come-funziona" style={{ backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+    <section id="come-funziona" style={{
+      backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
+      clipPath: 'polygon(0 0, 100% 0, 100% 94%, 0 100%)',
+      marginBottom: '-50px',
+    }}>
       {/* Dot grid texture */}
       <div style={{
         position: 'absolute', inset: 0, opacity: 0.35, pointerEvents: 'none',
@@ -639,7 +625,11 @@ function PercheElevia() {
   ]
 
   return (
-    <section id="perche" style={{ backgroundColor: C.navy, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+    <section id="perche" style={{
+      backgroundColor: C.navy, padding: 'clamp(100px, 10vw, 180px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
+      clipPath: 'polygon(0 6%, 100% 0, 100% 94%, 0 100%)',
+      marginBottom: '-50px',
+    }}>
       {/* Background photo */}
       <div style={{ position: 'absolute', inset: 0, opacity: 0.08 }}>
         <img src={foto2} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -698,7 +688,11 @@ function PercheElevia() {
    ═══════════════════════════════════════════ */
 function TrustStrip() {
   return (
-    <section style={{ position: 'relative', height: 'clamp(300px, 50vh, 500px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <section style={{
+      position: 'relative', height: 'clamp(350px, 55vh, 550px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      clipPath: 'polygon(0 0, 100% 8%, 100% 100%, 0 92%)',
+      marginBottom: '-50px',
+    }}>
       <img src={foto7} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
       <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(14,27,42,0.7)' }} />
 
@@ -728,7 +722,11 @@ function FAQ() {
   ]
 
   return (
-    <section id="faq" style={{ backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+    <section id="faq" style={{
+      backgroundColor: C.warmwhite, padding: 'clamp(100px, 10vw, 180px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
+      clipPath: 'polygon(0 6%, 100% 0, 100% 94%, 0 100%)',
+      marginBottom: '-50px',
+    }}>
       {/* Horizontal lines texture */}
       <div style={{
         position: 'absolute', inset: 0, opacity: 0.3, pointerEvents: 'none',
@@ -817,7 +815,10 @@ function Contatti() {
   }
 
   return (
-    <section id="contatti" style={{ backgroundColor: C.navy, padding: 'clamp(64px, 8vw, 144px) 0', position: 'relative', overflow: 'hidden' }}>
+    <section id="contatti" style={{
+      backgroundColor: C.navy, padding: 'clamp(100px, 10vw, 180px) 0 clamp(80px, 8vw, 144px)', position: 'relative', overflow: 'hidden',
+      clipPath: 'polygon(0 0, 100% 6%, 100% 100%, 0 100%)',
+    }}>
       {/* Grid texture */}
       <div style={{
         position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none',
@@ -1068,16 +1069,11 @@ function App() {
     <>
       <Navbar />
       <Hero />
-      <AngleDivider from={C.navy} to={C.anthracite} />
       <SocialProof />
-      <AngleDivider from={C.anthracite} to={C.warmwhite} flip />
       <ComeFunziona />
-      <AngleDivider from={C.warmwhite} to={C.navy} />
       <PercheElevia />
       <TrustStrip />
-      <AngleDivider from={C.navy} to={C.warmwhite} flip />
       <FAQ />
-      <AngleDivider from={C.warmwhite} to={C.navy} />
       <Contatti />
       <Footer />
     </>
