@@ -492,6 +492,7 @@ function Hero() {
    SOCIAL PROOF — Numeri
    ═══════════════════════════════════════════ */
 function SocialProof() {
+  const sectionRef = useRef(null)
   const stats = [
     { value: '€2.5M+', label: 'Capitale gestito' },
     { value: '12+', label: 'Operazioni completate' },
@@ -499,8 +500,27 @@ function SocialProof() {
     { value: '6-18', label: 'Mesi per operazione' },
   ]
 
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const items = section.querySelectorAll('.sp-item')
+    const divider = section.querySelector('.sp-divider')
+
+    gsap.set(items, { opacity: 0, y: 40, scale: 0.9 })
+    if (divider) gsap.set(divider, { scaleX: 0 })
+
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: section, start: 'top 80%', end: 'bottom 20%', toggleActions: 'play none none reverse' },
+    })
+
+    tl.to(items, { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out' })
+    if (divider) tl.to(divider, { scaleX: 1, duration: 1, ease: 'power2.inOut' }, '-=0.4')
+
+    return () => { tl.kill(); ScrollTrigger.getAll().forEach(st => { if (st.trigger === section) st.kill() }) }
+  }, [])
+
   return (
-    <section style={{
+    <section ref={sectionRef} style={{
       backgroundColor: C.anthracite, padding: 'clamp(48px, 5vw, 80px) 0', position: 'relative', overflow: 'hidden',
     }}>
       {/* Diagonal lines texture */}
@@ -516,7 +536,7 @@ function SocialProof() {
       <div style={{ padding: '0 clamp(24px, 5vw, 80px)', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '32px', textAlign: 'center' }}>
           {stats.map((stat, i) => (
-            <div key={i}>
+            <div key={i} className="sp-item">
               <p style={{ fontFamily: '"Playfair Display", serif', color: C.gold, fontSize: 'clamp(2rem, 4vw, 3.5rem)', marginBottom: '8px' }}>
                 {stat.value}
               </p>
@@ -535,17 +555,73 @@ function SocialProof() {
    COME FUNZIONA — 3 step + CTA
    ═══════════════════════════════════════════ */
 function ComeFunziona() {
+  const sectionRef = useRef(null)
   const steps = [
     { num: '01', title: 'Parliamone', desc: 'Fissiamo una call gratuita di 20 minuti. Ti spieghiamo tutto: come funziona, cosa facciamo, quanto puoi aspettarti.', image: foto1, cta: 'È gratis, senza impegno' },
     { num: '02', title: 'Scegli l\'operazione', desc: 'Ti presentiamo le operazioni disponibili con tutti i numeri: costi, margini previsti, tempistiche e analisi del rischio.', image: foto4, cta: 'Dati reali, zero fumo' },
     { num: '03', title: 'Guadagna con noi', desc: 'Partecipi all\'operazione e segui tutto in tempo reale. Report periodici, comunicazione diretta, massima trasparenza.', image: foto3, cta: 'Sempre aggiornato' },
   ]
 
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const ctx = gsap.context(() => {
+      // Header animation
+      const header = section.querySelector('.cf-header')
+      if (header) {
+        gsap.from(header.children, {
+          opacity: 0, y: 60, stagger: 0.2, duration: 1, ease: 'power3.out',
+          scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Step rows - alternate slide directions + parallax on images
+      const rows = section.querySelectorAll('.step-row')
+      rows.forEach((row, i) => {
+        const imgWrap = row.querySelector('.step-img')
+        const content = row.querySelector('.step-content')
+        const img = row.querySelector('.step-img img')
+        const dir = i % 2 === 0 ? -1 : 1
+
+        if (imgWrap) {
+          gsap.from(imgWrap, {
+            opacity: 0, x: dir * 80, duration: 1, ease: 'power3.out',
+            scrollTrigger: { trigger: row, start: 'top 80%', toggleActions: 'play none none reverse' },
+          })
+        }
+        if (content) {
+          gsap.from(content.children, {
+            opacity: 0, x: -dir * 50, stagger: 0.12, duration: 0.8, ease: 'power3.out',
+            scrollTrigger: { trigger: row, start: 'top 80%', toggleActions: 'play none none reverse' },
+          })
+        }
+        // Parallax on image
+        if (img) {
+          gsap.fromTo(img, { yPercent: -8 }, {
+            yPercent: 8, ease: 'none',
+            scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: 1 },
+          })
+        }
+      })
+
+      // CTA at bottom
+      const cta = section.querySelector('.cf-cta')
+      if (cta) {
+        gsap.from(cta, {
+          opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: cta, start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+    }, section)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="come-funziona" style={{
+    <section ref={sectionRef} id="come-funziona" style={{
       backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
       clipPath: 'polygon(0 0, 100% 0, 100% 94%, 0 100%)',
-      marginBottom: '-50px',
+      marginBottom: '-50px', zIndex: 3,
     }}>
       {/* Dot grid texture */}
       <div style={{
@@ -559,7 +635,7 @@ function ComeFunziona() {
 
       <div style={{ padding: '0 clamp(24px, 5vw, 80px)' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(48px, 6vw, 96px)' }}>
+        <div className="cf-header" style={{ textAlign: 'center', marginBottom: 'clamp(48px, 6vw, 96px)' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>— Come funziona</p>
           <h2 style={{ fontFamily: '"Playfair Display", serif', color: C.anthracite, fontSize: 'clamp(2rem, 5vw, 4rem)', lineHeight: 1, marginBottom: '24px' }}>
             Tre passi. Nessuna sorpresa.
@@ -574,8 +650,8 @@ function ComeFunziona() {
           {steps.map((step, i) => (
             <div key={i} className="step-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'clamp(24px, 4vw, 64px)', alignItems: 'center' }}>
               {/* Image */}
-              <div style={{ position: 'relative', overflow: 'hidden', order: i % 2 !== 0 ? 2 : 0 }}>
-                <img src={step.image} alt={step.title} style={{ width: '100%', height: 'clamp(250px, 30vw, 400px)', objectFit: 'cover', display: 'block' }} />
+              <div className="step-img" style={{ position: 'relative', overflow: 'hidden', order: i % 2 !== 0 ? 2 : 0 }}>
+                <img src={step.image} alt={step.title} style={{ width: '100%', height: 'clamp(250px, 30vw, 400px)', objectFit: 'cover', display: 'block', willChange: 'transform' }} />
                 <div style={{
                   position: 'absolute', top: '16px', left: '16px', width: '48px', height: '48px',
                   backgroundColor: C.gold, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -585,7 +661,7 @@ function ComeFunziona() {
                 </div>
               </div>
               {/* Content */}
-              <div>
+              <div className="step-content">
                 <h3 style={{ fontFamily: '"Playfair Display", serif', color: C.anthracite, fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', marginBottom: '16px' }}>
                   {step.title}
                 </h3>
@@ -604,7 +680,7 @@ function ComeFunziona() {
         </div>
 
         {/* CTA */}
-        <div style={{ textAlign: 'center', marginTop: 'clamp(48px, 6vw, 96px)' }}>
+        <div className="cf-cta" style={{ textAlign: 'center', marginTop: 'clamp(48px, 6vw, 96px)' }}>
           <p style={{ fontFamily: '"Libre Baskerville", serif', color: 'rgba(43,46,52,0.4)', fontSize: '14px', marginBottom: '24px' }}>Pronto a fare il primo passo?</p>
           <CTAButton large />
         </div>
@@ -617,6 +693,7 @@ function ComeFunziona() {
    PERCHÉ ELEVIA — Benefici + CTA
    ═══════════════════════════════════════════ */
 function PercheElevia() {
+  const sectionRef = useRef(null)
   const benefits = [
     { icon: ShieldCheck, title: 'Rischio controllato', desc: 'Non inseguiamo rendimenti fuori scala. Ogni operazione è analizzata, calcolata e protetta.' },
     { icon: Eye, title: 'Trasparenza totale', desc: 'Vedi tutto: costi, margini, tempistiche. Report periodici e comunicazione diretta.' },
@@ -624,15 +701,70 @@ function PercheElevia() {
     { icon: Handshake, title: 'Rapporto umano', desc: 'Non sei un numero. Costruiamo relazioni di fiducia, con un team sempre raggiungibile.' },
   ]
 
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const ctx = gsap.context(() => {
+      // Header stagger
+      const header = section.querySelector('.pe-header')
+      if (header) {
+        gsap.from(header.children, {
+          opacity: 0, y: 50, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Benefit cards - staggered from bottom with scale
+      const cards = section.querySelectorAll('.pe-card')
+      gsap.from(cards, {
+        opacity: 0, y: 80, scale: 0.85, stagger: 0.12, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: cards[0], start: 'top 85%', toggleActions: 'play none none reverse' },
+      })
+
+      // Hover effect on cards with GSAP
+      cards.forEach(card => {
+        const icon = card.querySelector('.pe-icon')
+        card.addEventListener('mouseenter', () => {
+          gsap.to(card, { y: -8, borderColor: 'rgba(184,164,106,0.4)', backgroundColor: 'rgba(247,246,243,0.1)', duration: 0.35, ease: 'power2.out' })
+          if (icon) gsap.to(icon, { scale: 1.15, rotation: 5, duration: 0.4, ease: 'back.out(2)' })
+        })
+        card.addEventListener('mouseleave', () => {
+          gsap.to(card, { y: 0, borderColor: 'rgba(247,246,243,0.1)', backgroundColor: 'rgba(247,246,243,0.05)', duration: 0.35, ease: 'power2.out' })
+          if (icon) gsap.to(icon, { scale: 1, rotation: 0, duration: 0.3, ease: 'power2.out' })
+        })
+      })
+
+      // Background parallax on the photo
+      const bgImg = section.querySelector('.pe-bg-img')
+      if (bgImg) {
+        gsap.fromTo(bgImg, { yPercent: -10 }, {
+          yPercent: 10, ease: 'none',
+          scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 1 },
+        })
+      }
+
+      // CTA fade up
+      const cta = section.querySelector('.pe-cta')
+      if (cta) {
+        gsap.from(cta, {
+          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: cta, start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+    }, section)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="perche" style={{
-      backgroundColor: C.navy, padding: 'clamp(100px, 10vw, 180px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
-      clipPath: 'polygon(0 6%, 100% 0, 100% 94%, 0 100%)',
-      marginBottom: '-50px',
+    <section ref={sectionRef} id="perche" style={{
+      backgroundColor: C.navy, padding: 'clamp(160px, 16vw, 280px) 0 clamp(160px, 16vw, 280px)', position: 'relative', overflow: 'hidden',
+      marginTop: '-200px', paddingTop: 'clamp(260px, 22vw, 420px)',
+      marginBottom: '-80px', zIndex: 1,
     }}>
       {/* Background photo */}
-      <div style={{ position: 'absolute', inset: 0, opacity: 0.08 }}>
-        <img src={foto2} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      <div style={{ position: 'absolute', top: '-20%', left: 0, right: 0, bottom: '-20%', opacity: 0.08 }}>
+        <img className="pe-bg-img" src={foto2} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', willChange: 'transform' }} />
       </div>
       {/* Cross-hatch texture */}
       <div style={{
@@ -642,7 +774,7 @@ function PercheElevia() {
 
       <div style={{ position: 'relative', zIndex: 1, padding: '0 clamp(24px, 5vw, 80px)' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(48px, 6vw, 96px)' }}>
+        <div className="pe-header" style={{ textAlign: 'center', marginBottom: 'clamp(48px, 6vw, 96px)' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>— Perché sceglierci</p>
           <h2 style={{ fontFamily: '"Playfair Display", serif', color: C.warmwhite, fontSize: 'clamp(2rem, 5vw, 4rem)', lineHeight: 1, marginBottom: '24px' }}>
             Non ti promettiamo la luna.
@@ -655,12 +787,12 @@ function PercheElevia() {
         {/* Benefits grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', margin: '0 auto 64px' }}>
           {benefits.map((b, i) => (
-            <div key={i} style={{
+            <div key={i} className="pe-card" style={{
               padding: 'clamp(24px, 3vw, 40px)',
               backgroundColor: 'rgba(247,246,243,0.05)', border: '1px solid rgba(247,246,243,0.1)',
-              transition: 'all 0.3s',
+              cursor: 'default',
             }}>
-              <div style={{ marginBottom: '20px' }}><b.icon size={32} color={C.gold} strokeWidth={1.5} /></div>
+              <div className="pe-icon" style={{ marginBottom: '20px', display: 'inline-block' }}><b.icon size={32} color={C.gold} strokeWidth={1.5} /></div>
               <h3 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.warmwhite, fontSize: '13px', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
                 {b.title}
               </h3>
@@ -672,7 +804,7 @@ function PercheElevia() {
         </div>
 
         {/* CTA */}
-        <div style={{ textAlign: 'center' }}>
+        <div className="pe-cta" style={{ textAlign: 'center' }}>
           <CTAButton large />
           <p style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.2)', fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', marginTop: '16px' }}>
             Nessun vincolo · Nessun costo · 20 minuti
@@ -687,21 +819,50 @@ function PercheElevia() {
    TRUST STRIP — Citazione + foto
    ═══════════════════════════════════════════ */
 function TrustStrip() {
-  return (
-    <section style={{
-      position: 'relative', height: 'clamp(350px, 55vh, 550px)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      clipPath: 'polygon(0 0, 100% 8%, 100% 100%, 0 92%)',
-      marginBottom: '-50px',
-    }}>
-      <img src={foto7} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-      <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(14,27,42,0.7)' }} />
+  const sectionRef = useRef(null)
 
-      <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '24px clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
-        <img src={monogrammaBianco} alt="" style={{ width: '56px', height: '56px', margin: '0 auto 32px', opacity: 0.3 }} />
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const ctx = gsap.context(() => {
+      // Parallax background image
+      const bgImg = section.querySelector('.ts-bg')
+      if (bgImg) {
+        gsap.fromTo(bgImg, { yPercent: -3 }, {
+          yPercent: 3, ease: 'none',
+          scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 1 },
+        })
+      }
+
+      // Quote content reveal
+      const content = section.querySelector('.ts-content')
+      if (content) {
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: section, start: 'top 70%', toggleActions: 'play none none reverse' },
+        })
+        tl.from(content.querySelector('.ts-mono'), { opacity: 0, scale: 0.5, rotation: -180, duration: 1, ease: 'back.out(1.5)' })
+        tl.from(content.querySelector('blockquote'), { opacity: 0, y: 40, duration: 0.8, ease: 'power3.out' }, '-=0.3')
+        tl.from(content.querySelector('.ts-author'), { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out' }, '-=0.3')
+      }
+    }, section)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section ref={sectionRef} style={{
+      position: 'relative', minHeight: 'clamp(600px, 80vh, 900px)', overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      marginTop: '-120px', marginBottom: '-120px', zIndex: 0,
+    }}>
+      <img className="ts-bg" src={foto7} alt="" style={{ position: 'absolute', top: '-10%', left: 0, width: '100%', height: '120%', objectFit: 'cover', willChange: 'transform' }} />
+      <div style={{ position: 'absolute', top: '-10%', left: 0, width: '100%', height: '120%', backgroundColor: 'rgba(14,27,42,0.7)' }} />
+
+      <div className="ts-content" style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '24px clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
+        <img className="ts-mono" src={monogrammaBianco} alt="" style={{ width: '56px', height: '56px', margin: '0 auto 32px', opacity: 0.3 }} />
         <blockquote style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', color: C.warmwhite, fontSize: 'clamp(1.3rem, 3vw, 2.5rem)', lineHeight: 1.3, marginBottom: '24px' }}>
           "Crescita strutturata.<br />Livello dopo livello."
         </blockquote>
-        <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase' }}>— La filosofia ELEVIA</p>
+        <p className="ts-author" style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase' }}>— La filosofia ELEVIA</p>
       </div>
     </section>
   )
@@ -711,6 +872,7 @@ function TrustStrip() {
    FAQ
    ═══════════════════════════════════════════ */
 function FAQ() {
+  const sectionRef = useRef(null)
   const [openIndex, setOpenIndex] = useState(null)
 
   const faqs = [
@@ -721,11 +883,44 @@ function FAQ() {
     { q: 'Devo avere esperienza per investire?', a: 'Assolutamente no. Ti spieghiamo tutto nella call gratuita e ti accompagniamo in ogni fase. Il nostro lavoro è rendere l\'investimento semplice per te.' },
   ]
 
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const ctx = gsap.context(() => {
+      // Header
+      const header = section.querySelector('.faq-header')
+      if (header) {
+        gsap.from(header.children, {
+          opacity: 0, y: 50, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Accordion items - staggered cascade from left
+      const items = section.querySelectorAll('.faq-item')
+      gsap.from(items, {
+        opacity: 0, x: -60, stagger: 0.1, duration: 0.7, ease: 'power3.out',
+        scrollTrigger: { trigger: items[0], start: 'top 85%', toggleActions: 'play none none reverse' },
+      })
+
+      // CTA
+      const cta = section.querySelector('.faq-cta')
+      if (cta) {
+        gsap.from(cta, {
+          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: cta, start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+    }, section)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="faq" style={{
+    <section ref={sectionRef} id="faq" style={{
       backgroundColor: C.warmwhite, padding: 'clamp(100px, 10vw, 180px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
       clipPath: 'polygon(0 6%, 100% 0, 100% 94%, 0 100%)',
-      marginBottom: '-50px',
+      marginBottom: '-50px', zIndex: 2,
     }}>
       {/* Horizontal lines texture */}
       <div style={{
@@ -734,7 +929,7 @@ function FAQ() {
       }} />
       <div style={{ padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(36px, 4vw, 64px)' }}>
+        <div className="faq-header" style={{ textAlign: 'center', marginBottom: 'clamp(36px, 4vw, 64px)' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>— Domande frequenti</p>
           <h2 style={{ fontFamily: '"Playfair Display", serif', color: C.anthracite, fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1 }}>
             Hai domande? Abbiamo risposte.
@@ -744,7 +939,7 @@ function FAQ() {
         {/* Accordion */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: 'clamp(36px, 4vw, 64px)' }}>
           {faqs.map((faq, i) => (
-            <div key={i} style={{ border: `1px solid rgba(43,46,52,0.1)`, overflow: 'hidden' }}>
+            <div key={i} className="faq-item" style={{ border: `1px solid rgba(43,46,52,0.1)`, overflow: 'hidden' }}>
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 style={{
@@ -787,7 +982,7 @@ function FAQ() {
         </div>
 
         {/* CTA */}
-        <div style={{ textAlign: 'center' }}>
+        <div className="faq-cta" style={{ textAlign: 'center' }}>
           <p style={{ fontFamily: '"Libre Baskerville", serif', color: 'rgba(43,46,52,0.4)', fontSize: '15px', marginBottom: '16px' }}>Hai altre domande? Parliamone.</p>
           <CTAButton />
         </div>
@@ -800,6 +995,7 @@ function FAQ() {
    CONTATTI
    ═══════════════════════════════════════════ */
 function Contatti() {
+  const sectionRef = useRef(null)
   const [formData, setFormData] = useState({ nome: '', email: '', telefono: '', messaggio: '' })
   const [submitted, setSubmitted] = useState(false)
 
@@ -814,8 +1010,52 @@ function Contatti() {
     outline: 'none', transition: 'border-color 0.3s',
   }
 
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const ctx = gsap.context(() => {
+      // Header reveal
+      const header = section.querySelector('.ct-header')
+      if (header) {
+        gsap.from(header.children, {
+          opacity: 0, y: 60, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Form fields cascade reveal
+      const formFields = section.querySelectorAll('.ct-field')
+      if (formFields.length) {
+        gsap.from(formFields, {
+          opacity: 0, y: 40, stagger: 0.1, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: formFields[0], start: 'top 85%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Corner glow animation
+      const glow = section.querySelector('.ct-glow')
+      if (glow) {
+        gsap.fromTo(glow, { scale: 0.8, opacity: 0 }, {
+          scale: 1, opacity: 1, duration: 2, ease: 'power2.out',
+          scrollTrigger: { trigger: section, start: 'top 60%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Contact info items
+      const infoItems = section.querySelectorAll('.ct-info')
+      if (infoItems.length) {
+        gsap.from(infoItems, {
+          opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: infoItems[0], start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+    }, section)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="contatti" style={{
+    <section ref={sectionRef} id="contatti" style={{
       backgroundColor: C.navy, padding: 'clamp(100px, 10vw, 180px) 0 clamp(80px, 8vw, 144px)', position: 'relative', overflow: 'hidden',
       clipPath: 'polygon(0 0, 100% 6%, 100% 100%, 0 100%)',
     }}>
@@ -826,13 +1066,13 @@ function Contatti() {
         backgroundSize: '64px 64px',
       }} />
       {/* Corner glow */}
-      <div style={{
+      <div className="ct-glow" style={{
         position: 'absolute', top: '-200px', left: '-200px', width: '600px', height: '600px', pointerEvents: 'none',
         background: 'radial-gradient(circle, rgba(184,164,106,0.05) 0%, transparent 60%)',
       }} />
       <div style={{ position: 'relative', zIndex: 1, padding: '0 clamp(24px, 5vw, 80px)', maxWidth: '1000px', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 'clamp(48px, 5vw, 80px)' }}>
+        <div className="ct-header" style={{ textAlign: 'center', marginBottom: 'clamp(48px, 5vw, 80px)' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: C.gold, fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '24px' }}>— Inizia ora</p>
           <h2 style={{ fontFamily: '"Playfair Display", serif', color: C.warmwhite, fontSize: 'clamp(2rem, 5vw, 4rem)', lineHeight: 1, marginBottom: '24px' }}>
             Il primo passo?<br />
@@ -858,7 +1098,7 @@ function Contatti() {
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px' }}>
+            <div className="ct-field" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px' }}>
               <input
                 type="text" required placeholder="Nome e Cognome *"
                 value={formData.nome}
@@ -877,6 +1117,7 @@ function Contatti() {
               />
             </div>
             <input
+              className="ct-field"
               type="tel" placeholder="Telefono (facoltativo)"
               value={formData.telefono}
               onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
@@ -885,6 +1126,7 @@ function Contatti() {
               style={inputStyle}
             />
             <textarea
+              className="ct-field"
               rows={3} placeholder="Come possiamo aiutarti?"
               value={formData.messaggio}
               onChange={(e) => setFormData({ ...formData, messaggio: e.target.value })}
@@ -892,7 +1134,7 @@ function Contatti() {
               onBlur={(e) => { e.target.style.borderBottomColor = 'rgba(247,246,243,0.15)' }}
               style={{ ...inputStyle, resize: 'none' }}
             />
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '24px', paddingTop: '16px' }}>
+            <div className="ct-field" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '24px', paddingTop: '16px' }}>
               <button type="submit" style={{
                 display: 'inline-flex', alignItems: 'center', gap: '10px',
                 padding: '16px 48px', fontSize: '12px',
@@ -916,7 +1158,7 @@ function Contatti() {
             { label: 'Telefono', value: '+39 897 376 2004' },
             { label: 'Email', value: 'info@elevia.it' },
           ].map((item, i) => (
-            <div key={i}>
+            <div key={i} className="ct-info">
               <p style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(184,164,106,0.5)', fontSize: '9px', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '4px' }}>{item.label}</p>
               <p style={{ fontFamily: '"Libre Baskerville", serif', color: 'rgba(247,246,243,0.5)', fontSize: '14px' }}>{item.value}</p>
             </div>
@@ -931,6 +1173,7 @@ function Contatti() {
    Footer
    ═══════════════════════════════════════════ */
 function Footer() {
+  const footerRef = useRef(null)
   const footerLinks = [
     { label: 'Come Funziona', href: '#come-funziona' },
     { label: 'Perché ELEVIA', href: '#perche' },
@@ -938,16 +1181,60 @@ function Footer() {
     { label: 'Contatti', href: '#contatti' },
   ]
 
+  useEffect(() => {
+    const footer = footerRef.current
+    if (!footer) return
+    const ctx = gsap.context(() => {
+      // Gold line expand
+      const line = footer.querySelector('.ft-line')
+      if (line) {
+        gsap.from(line, {
+          scaleX: 0, duration: 1.2, ease: 'power2.inOut',
+          scrollTrigger: { trigger: footer, start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Logo + claim
+      const top = footer.querySelector('.ft-top')
+      if (top) {
+        gsap.from(top.children, {
+          opacity: 0, y: 30, stagger: 0.15, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: top, start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Grid columns
+      const cols = footer.querySelectorAll('.ft-col')
+      if (cols.length) {
+        gsap.from(cols, {
+          opacity: 0, y: 40, stagger: 0.15, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: cols[0], start: 'top 90%', toggleActions: 'play none none reverse' },
+        })
+      }
+
+      // Bottom bar
+      const bottom = footer.querySelector('.ft-bottom')
+      if (bottom) {
+        gsap.from(bottom, {
+          opacity: 0, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: bottom, start: 'top 95%', toggleActions: 'play none none reverse' },
+        })
+      }
+    }, footer)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <footer style={{ backgroundColor: '#0a1118', position: 'relative', overflow: 'hidden' }}>
+    <footer ref={footerRef} style={{ backgroundColor: '#0a1118', position: 'relative', overflow: 'hidden' }}>
       {/* Linea oro in alto */}
-      <div style={{ height: '1px', background: `linear-gradient(90deg, transparent, rgba(184,164,106,0.3), transparent)` }} />
+      <div className="ft-line" style={{ height: '1px', background: `linear-gradient(90deg, transparent, rgba(184,164,106,0.3), transparent)`, transformOrigin: 'center' }} />
 
       {/* Contenuto principale */}
       <div style={{ padding: 'clamp(48px, 6vw, 80px) clamp(24px, 5vw, 80px)', position: 'relative', zIndex: 1 }}>
 
         {/* Top section: Logo + Claim */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '56px' }}>
+        <div className="ft-top" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '56px' }}>
           <img src={logoBianco} alt="ELEVIA" style={{ height: '40px', opacity: 0.6, marginBottom: '20px' }} />
           <p style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', color: 'rgba(184,164,106,0.4)', fontSize: 'clamp(16px, 2vw, 20px)', maxWidth: '500px', lineHeight: 1.6 }}>
             "Elevare il capitale. Con metodo."
@@ -958,7 +1245,7 @@ function Footer() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'clamp(32px, 4vw, 64px)', maxWidth: '1200px', margin: '0 auto 56px' }}>
 
           {/* Colonna 1: Navigazione */}
-          <div>
+          <div className="ft-col">
             <h4 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.gold, fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px' }}>
               Navigazione
             </h4>
@@ -976,7 +1263,7 @@ function Footer() {
           </div>
 
           {/* Colonna 2: Contatti */}
-          <div>
+          <div className="ft-col">
             <h4 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.gold, fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px' }}>
               Contatti
             </h4>
@@ -1003,7 +1290,7 @@ function Footer() {
           </div>
 
           {/* Colonna 3: Social + CTA */}
-          <div>
+          <div className="ft-col">
             <h4 style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 600, color: C.gold, fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '24px' }}>
               Seguici
             </h4>
@@ -1035,7 +1322,7 @@ function Footer() {
         <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(247,246,243,0.06), transparent)', marginBottom: '28px' }} />
 
         {/* Bottom bar */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+        <div className="ft-bottom" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
           <p style={{ fontFamily: 'Poppins, sans-serif', color: 'rgba(247,246,243,0.15)', fontSize: '10px', letterSpacing: '0.15em' }}>
             © {new Date().getFullYear()} ELEVIA Investimenti Immobiliari — Tutti i diritti riservati
           </p>
