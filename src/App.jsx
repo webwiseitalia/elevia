@@ -386,8 +386,7 @@ function Hero() {
       height: '100vh', minHeight: '700px', backgroundColor: C.navy,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       position: 'relative', overflow: 'hidden',
-      clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 94%)',
-      marginBottom: '-50px',
+      zIndex: 2,
     }}>
       {/* Canvas griglia animata */}
       <canvas ref={canvasRef} style={{
@@ -408,12 +407,13 @@ function Hero() {
       }} />
 
       {/* Logo container */}
-      <div style={{ position: 'relative', zIndex: 4, textAlign: 'center' }}>
+      <div style={{ position: 'relative', zIndex: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* SVG Monogramma */}
         <svg ref={svgRef} viewBox="0 0 1080 1080" style={{
-          width: 'clamp(200px, 28vw, 380px)',
-          height: 'clamp(200px, 28vw, 380px)',
+          width: 'clamp(240px, 34vw, 440px)',
+          height: 'clamp(240px, 34vw, 440px)',
           overflow: 'visible',
+          display: 'block',
         }}>
           {/* Freccia TOP */}
           <path id="arrow-top" fill={C.warmwhite} d="M453.77,130.98l363.7,139.11c4.21,1.61,6.98,5.64,6.98,10.15v166.73c0,7.61-7.63,12.87-14.74,10.15l-360.91-138.04c-3.55-1.36-7.55-.76-10.55,1.57l-165.18,128.47c-7.14,5.55-17.53.46-17.53-8.57v-162.46c0-3.35,1.55-6.52,4.19-8.57l174.32-135.58c5.61-4.36,13.09-5.47,19.72-2.94Z"/>
