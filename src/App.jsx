@@ -156,7 +156,7 @@ function Navbar() {
           className="nav-mobile-btn"
           style={{
             display: 'none', background: 'none', border: 'none', cursor: 'pointer',
-            flexDirection: 'column', alignItems: 'flex-end', gap: '6px', padding: '8px', zIndex: 60, position: 'relative',
+            flexDirection: 'column', alignItems: 'flex-end', gap: '6px', padding: '8px', zIndex: 51, position: 'relative',
           }}
           aria-label="Menu"
         >
@@ -182,10 +182,14 @@ function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.3 }}
             style={{
-              position: 'fixed', inset: 0, backgroundColor: C.navy, zIndex: 55,
-              display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '32px',
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              width: '100vw', height: '100vh', height: '100dvh',
+              backgroundColor: C.navy, zIndex: 49,
+              display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+              padding: '80px 32px 32px',
+              overflowY: 'auto',
             }}
           >
             {[...links, { label: 'Contatti', href: '#contatti' }].map((link, i) => (
@@ -195,10 +199,10 @@ function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.15 + i * 0.08 }}
+                transition={{ delay: 0.1 + i * 0.06 }}
                 style={{
                   display: 'block', fontFamily: '"Playfair Display", serif',
-                  color: C.beige, fontSize: '32px', padding: '16px 0',
+                  color: C.beige, fontSize: 'clamp(24px, 6vw, 36px)', padding: '16px 0',
                   borderBottom: `1px solid rgba(230,220,203,0.1)`,
                   width: '100%', textAlign: 'center', textDecoration: 'none',
                 }}
