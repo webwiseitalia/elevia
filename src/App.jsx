@@ -228,11 +228,11 @@ function Hero() {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 600),    // freccia TOP decolla dal basso
-      setTimeout(() => setPhase(2), 1400),   // freccia CENTRO decolla dal basso
-      setTimeout(() => setPhase(3), 2200),   // freccia BOTTOM decolla dal basso
-      setTimeout(() => setPhase(4), 3600),   // logo diventa gold
-      setTimeout(() => setPhase(5), 4400),   // tagline + scroll
+      setTimeout(() => setPhase(1), 400),    // freccia TOP decolla dal basso
+      setTimeout(() => setPhase(2), 1000),   // freccia CENTRO decolla dal basso
+      setTimeout(() => setPhase(3), 1600),   // freccia BOTTOM decolla dal basso
+      setTimeout(() => setPhase(4), 2600),   // logo diventa gold
+      setTimeout(() => setPhase(5), 3200),   // tagline + scroll
     ]
     return () => timers.forEach(clearTimeout)
   }, [])
@@ -322,7 +322,7 @@ function Hero() {
       transformOrigin: 'center center',
     })
 
-    const tl = gsap.timeline({ delay: 0.6 })
+    const tl = gsap.timeline({ delay: 0.4 })
 
     // Funzione per creare l'animazione di volo per ogni freccia
     const flyIn = (arrow, delay) => {
@@ -334,7 +334,7 @@ function Hero() {
         scaleX: 0.5, scaleY: 0.7,
         skewX: -15, skewY: 6,
         rotation: -8,
-        duration: 0.5,
+        duration: 0.3,
         ease: 'power1.in',
       }, delay)
 
@@ -345,9 +345,9 @@ function Hero() {
         scaleX: 0.8, scaleY: 0.9,
         skewX: -5, skewY: 2,
         rotation: -3,
-        duration: 0.4,
+        duration: 0.25,
         ease: 'none',
-      }, delay + 0.5)
+      }, delay + 0.3)
 
       // Fase 3: atterra nella posizione finale, completamente raddrizzata
       tl.to(arrow, {
@@ -356,27 +356,27 @@ function Hero() {
         scaleX: 1, scaleY: 1,
         skewX: 0, skewY: 0,
         rotation: 0,
-        duration: 0.5,
+        duration: 0.35,
         ease: 'power2.out',
-      }, delay + 0.9)
+      }, delay + 0.55)
     }
 
     // 1) Freccia TOP — prima a decollare, atterra in cima
     flyIn(arrowTop, 0)
 
     // 2) Freccia CENTRO — seconda
-    flyIn(arrowMid, 0.7)
+    flyIn(arrowMid, 0.5)
 
     // 3) Freccia BOTTOM — terza, completa il logo
-    flyIn(arrowBot, 1.4)
+    flyIn(arrowBot, 1.0)
 
     // Logo completo → transizione gold + glow
     tl.to([arrowTop, arrowMid, arrowBot], {
       fill: C.gold,
       filter: 'drop-shadow(0 0 25px rgba(184,164,106,0.7))',
-      duration: 0.8,
+      duration: 0.5,
       ease: 'power2.inOut',
-    }, 3)
+    }, 2.0)
 
     return () => tl.kill()
   }, [])
@@ -428,19 +428,19 @@ function Hero() {
           <div style={{
             width: phase >= 4 ? 'clamp(40px, 8vw, 100px)' : '0px',
             height: '1px', backgroundColor: C.gold,
-            transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+            transition: 'width 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
           }} />
           <div style={{
             width: '6px', height: '6px', borderRadius: '50%',
             backgroundColor: C.gold,
             opacity: phase >= 4 ? 1 : 0,
             transform: phase >= 4 ? 'scale(1)' : 'scale(0)',
-            transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s',
+            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
           }} />
           <div style={{
             width: phase >= 4 ? 'clamp(40px, 8vw, 100px)' : '0px',
             height: '1px', backgroundColor: C.gold,
-            transition: 'width 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s',
+            transition: 'width 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
           }} />
         </div>
 
@@ -451,7 +451,7 @@ function Hero() {
           letterSpacing: '0.2em', marginTop: '28px',
           opacity: phase >= 5 ? 1 : 0,
           transform: phase >= 5 ? 'translateY(0)' : 'translateY(30px)',
-          transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
         }}>
           Elevare il capitale. Con metodo.
         </p>
@@ -461,7 +461,7 @@ function Hero() {
           marginTop: '36px',
           opacity: phase >= 5 ? 1 : 0,
           transform: phase >= 5 ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s',
+          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s',
         }}>
           <CTAButton large />
         </div>
@@ -513,8 +513,8 @@ function SocialProof() {
       scrollTrigger: { trigger: section, start: 'top 80%', end: 'bottom 20%', toggleActions: 'play none none reverse' },
     })
 
-    tl.to(items, { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.15, ease: 'power3.out' })
-    if (divider) tl.to(divider, { scaleX: 1, duration: 1, ease: 'power2.inOut' }, '-=0.4')
+    tl.to(items, { opacity: 1, y: 0, scale: 1, duration: 0.45, stagger: 0.08, ease: 'power3.out' })
+    if (divider) tl.to(divider, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, '-=0.3')
 
     return () => { tl.kill(); ScrollTrigger.getAll().forEach(st => { if (st.trigger === section) st.kill() }) }
   }, [])
@@ -570,7 +570,7 @@ function ComeFunziona() {
       const header = section.querySelector('.cf-header')
       if (header) {
         gsap.from(header.children, {
-          opacity: 0, y: 60, stagger: 0.2, duration: 1, ease: 'power3.out',
+          opacity: 0, y: 40, stagger: 0.1, duration: 0.5, ease: 'power3.out',
           scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
         })
       }
@@ -585,13 +585,13 @@ function ComeFunziona() {
 
         if (imgWrap) {
           gsap.from(imgWrap, {
-            opacity: 0, x: dir * 80, duration: 1, ease: 'power3.out',
+            opacity: 0, x: dir * 60, duration: 0.5, ease: 'power3.out',
             scrollTrigger: { trigger: row, start: 'top 80%', toggleActions: 'play none none reverse' },
           })
         }
         if (content) {
           gsap.from(content.children, {
-            opacity: 0, x: -dir * 50, stagger: 0.12, duration: 0.8, ease: 'power3.out',
+            opacity: 0, x: -dir * 35, stagger: 0.06, duration: 0.45, ease: 'power3.out',
             scrollTrigger: { trigger: row, start: 'top 80%', toggleActions: 'play none none reverse' },
           })
         }
@@ -608,7 +608,7 @@ function ComeFunziona() {
       const cta = section.querySelector('.cf-cta')
       if (cta) {
         gsap.from(cta, {
-          opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
+          opacity: 0, y: 30, duration: 0.45, ease: 'power3.out',
           scrollTrigger: { trigger: cta, start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -618,7 +618,7 @@ function ComeFunziona() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="come-funziona" style={{
+    <section ref={sectionRef} id="come-funziona" className="section-cf" style={{
       backgroundColor: C.warmwhite, padding: 'clamp(64px, 8vw, 144px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
       clipPath: 'polygon(0 0, 100% 0, 100% 94%, 0 100%)',
       marginBottom: '-50px', zIndex: 3,
@@ -709,7 +709,7 @@ function PercheElevia() {
       const header = section.querySelector('.pe-header')
       if (header) {
         gsap.from(header.children, {
-          opacity: 0, y: 50, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          opacity: 0, y: 35, stagger: 0.08, duration: 0.5, ease: 'power3.out',
           scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
         })
       }
@@ -717,7 +717,7 @@ function PercheElevia() {
       // Benefit cards - staggered from bottom with scale
       const cards = section.querySelectorAll('.pe-card')
       gsap.from(cards, {
-        opacity: 0, y: 80, scale: 0.85, stagger: 0.12, duration: 0.9, ease: 'power3.out',
+        opacity: 0, y: 50, scale: 0.9, stagger: 0.06, duration: 0.5, ease: 'power3.out',
         scrollTrigger: { trigger: cards[0], start: 'top 85%', toggleActions: 'play none none reverse' },
       })
 
@@ -725,12 +725,12 @@ function PercheElevia() {
       cards.forEach(card => {
         const icon = card.querySelector('.pe-icon')
         card.addEventListener('mouseenter', () => {
-          gsap.to(card, { y: -8, borderColor: 'rgba(184,164,106,0.4)', backgroundColor: 'rgba(247,246,243,0.1)', duration: 0.35, ease: 'power2.out' })
-          if (icon) gsap.to(icon, { scale: 1.15, rotation: 5, duration: 0.4, ease: 'back.out(2)' })
+          gsap.to(card, { y: -8, borderColor: 'rgba(184,164,106,0.4)', backgroundColor: 'rgba(247,246,243,0.1)', duration: 0.25, ease: 'power2.out' })
+          if (icon) gsap.to(icon, { scale: 1.15, rotation: 5, duration: 0.25, ease: 'back.out(2)' })
         })
         card.addEventListener('mouseleave', () => {
-          gsap.to(card, { y: 0, borderColor: 'rgba(247,246,243,0.1)', backgroundColor: 'rgba(247,246,243,0.05)', duration: 0.35, ease: 'power2.out' })
-          if (icon) gsap.to(icon, { scale: 1, rotation: 0, duration: 0.3, ease: 'power2.out' })
+          gsap.to(card, { y: 0, borderColor: 'rgba(247,246,243,0.1)', backgroundColor: 'rgba(247,246,243,0.05)', duration: 0.25, ease: 'power2.out' })
+          if (icon) gsap.to(icon, { scale: 1, rotation: 0, duration: 0.2, ease: 'power2.out' })
         })
       })
 
@@ -747,7 +747,7 @@ function PercheElevia() {
       const cta = section.querySelector('.pe-cta')
       if (cta) {
         gsap.from(cta, {
-          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+          opacity: 0, y: 20, duration: 0.4, ease: 'power3.out',
           scrollTrigger: { trigger: cta, start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -757,7 +757,7 @@ function PercheElevia() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="perche" style={{
+    <section ref={sectionRef} id="perche" className="section-pe" style={{
       backgroundColor: C.navy, padding: 'clamp(160px, 16vw, 280px) 0 clamp(160px, 16vw, 280px)', position: 'relative', overflow: 'hidden',
       marginTop: '-200px', paddingTop: 'clamp(260px, 22vw, 420px)',
       marginBottom: '-80px', zIndex: 1,
@@ -785,7 +785,7 @@ function PercheElevia() {
         </div>
 
         {/* Benefits grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', margin: '0 auto 64px' }}>
+        <div className="pe-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', margin: '0 auto 64px' }}>
           {benefits.map((b, i) => (
             <div key={i} className="pe-card" style={{
               padding: 'clamp(24px, 3vw, 40px)',
@@ -840,9 +840,9 @@ function TrustStrip() {
         const tl = gsap.timeline({
           scrollTrigger: { trigger: section, start: 'top 70%', toggleActions: 'play none none reverse' },
         })
-        tl.from(content.querySelector('.ts-mono'), { opacity: 0, scale: 0.5, rotation: -180, duration: 1, ease: 'back.out(1.5)' })
-        tl.from(content.querySelector('blockquote'), { opacity: 0, y: 40, duration: 0.8, ease: 'power3.out' }, '-=0.3')
-        tl.from(content.querySelector('.ts-author'), { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out' }, '-=0.3')
+        tl.from(content.querySelector('.ts-mono'), { opacity: 0, scale: 0.5, rotation: -180, duration: 0.55, ease: 'back.out(1.5)' })
+        tl.from(content.querySelector('blockquote'), { opacity: 0, y: 30, duration: 0.4, ease: 'power3.out' }, '-=0.2')
+        tl.from(content.querySelector('.ts-author'), { opacity: 0, y: 15, duration: 0.3, ease: 'power3.out' }, '-=0.15')
       }
     }, section)
 
@@ -850,7 +850,7 @@ function TrustStrip() {
   }, [])
 
   return (
-    <section ref={sectionRef} style={{
+    <section ref={sectionRef} className="section-ts" style={{
       position: 'relative', minHeight: 'clamp(600px, 80vh, 900px)', overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center',
       marginTop: '-120px', marginBottom: '-120px', zIndex: 0,
     }}>
@@ -891,7 +891,7 @@ function FAQ() {
       const header = section.querySelector('.faq-header')
       if (header) {
         gsap.from(header.children, {
-          opacity: 0, y: 50, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          opacity: 0, y: 35, stagger: 0.08, duration: 0.5, ease: 'power3.out',
           scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
         })
       }
@@ -899,7 +899,7 @@ function FAQ() {
       // Accordion items - staggered cascade from left
       const items = section.querySelectorAll('.faq-item')
       gsap.from(items, {
-        opacity: 0, x: -60, stagger: 0.1, duration: 0.7, ease: 'power3.out',
+        opacity: 0, x: -40, stagger: 0.05, duration: 0.4, ease: 'power3.out',
         scrollTrigger: { trigger: items[0], start: 'top 85%', toggleActions: 'play none none reverse' },
       })
 
@@ -907,7 +907,7 @@ function FAQ() {
       const cta = section.querySelector('.faq-cta')
       if (cta) {
         gsap.from(cta, {
-          opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+          opacity: 0, y: 20, duration: 0.4, ease: 'power3.out',
           scrollTrigger: { trigger: cta, start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -917,7 +917,7 @@ function FAQ() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="faq" style={{
+    <section ref={sectionRef} id="faq" className="section-faq" style={{
       backgroundColor: C.warmwhite, padding: 'clamp(100px, 10vw, 180px) 0 clamp(100px, 10vw, 180px)', position: 'relative', overflow: 'hidden',
       clipPath: 'polygon(0 6%, 100% 0, 100% 94%, 0 100%)',
       marginBottom: '-50px', zIndex: 2,
@@ -968,7 +968,7 @@ function FAQ() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+                    transition={{ duration: 0.25, ease: [0.76, 0, 0.24, 1] }}
                     style={{ overflow: 'hidden' }}
                   >
                     <p style={{ padding: '0 24px 24px', fontFamily: '"Libre Baskerville", serif', color: 'rgba(43,46,52,0.5)', fontSize: '14px', lineHeight: 1.7 }}>
@@ -1018,7 +1018,7 @@ function Contatti() {
       const header = section.querySelector('.ct-header')
       if (header) {
         gsap.from(header.children, {
-          opacity: 0, y: 60, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+          opacity: 0, y: 40, stagger: 0.08, duration: 0.5, ease: 'power3.out',
           scrollTrigger: { trigger: header, start: 'top 85%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1027,7 +1027,7 @@ function Contatti() {
       const formFields = section.querySelectorAll('.ct-field')
       if (formFields.length) {
         gsap.from(formFields, {
-          opacity: 0, y: 40, stagger: 0.1, duration: 0.7, ease: 'power3.out',
+          opacity: 0, y: 25, stagger: 0.05, duration: 0.4, ease: 'power3.out',
           scrollTrigger: { trigger: formFields[0], start: 'top 85%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1036,7 +1036,7 @@ function Contatti() {
       const glow = section.querySelector('.ct-glow')
       if (glow) {
         gsap.fromTo(glow, { scale: 0.8, opacity: 0 }, {
-          scale: 1, opacity: 1, duration: 2, ease: 'power2.out',
+          scale: 1, opacity: 1, duration: 1, ease: 'power2.out',
           scrollTrigger: { trigger: section, start: 'top 60%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1045,7 +1045,7 @@ function Contatti() {
       const infoItems = section.querySelectorAll('.ct-info')
       if (infoItems.length) {
         gsap.from(infoItems, {
-          opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: 'power3.out',
+          opacity: 0, y: 20, stagger: 0.06, duration: 0.4, ease: 'power3.out',
           scrollTrigger: { trigger: infoItems[0], start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1055,7 +1055,7 @@ function Contatti() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="contatti" style={{
+    <section ref={sectionRef} id="contatti" className="section-ct" style={{
       backgroundColor: C.navy, padding: 'clamp(100px, 10vw, 180px) 0 clamp(80px, 8vw, 144px)', position: 'relative', overflow: 'hidden',
       clipPath: 'polygon(0 0, 100% 6%, 100% 100%, 0 100%)',
     }}>
@@ -1189,7 +1189,7 @@ function Footer() {
       const line = footer.querySelector('.ft-line')
       if (line) {
         gsap.from(line, {
-          scaleX: 0, duration: 1.2, ease: 'power2.inOut',
+          scaleX: 0, duration: 0.6, ease: 'power2.inOut',
           scrollTrigger: { trigger: footer, start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1198,7 +1198,7 @@ function Footer() {
       const top = footer.querySelector('.ft-top')
       if (top) {
         gsap.from(top.children, {
-          opacity: 0, y: 30, stagger: 0.15, duration: 0.8, ease: 'power3.out',
+          opacity: 0, y: 20, stagger: 0.08, duration: 0.45, ease: 'power3.out',
           scrollTrigger: { trigger: top, start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1207,7 +1207,7 @@ function Footer() {
       const cols = footer.querySelectorAll('.ft-col')
       if (cols.length) {
         gsap.from(cols, {
-          opacity: 0, y: 40, stagger: 0.15, duration: 0.8, ease: 'power3.out',
+          opacity: 0, y: 25, stagger: 0.08, duration: 0.45, ease: 'power3.out',
           scrollTrigger: { trigger: cols[0], start: 'top 90%', toggleActions: 'play none none reverse' },
         })
       }
@@ -1216,7 +1216,7 @@ function Footer() {
       const bottom = footer.querySelector('.ft-bottom')
       if (bottom) {
         gsap.from(bottom, {
-          opacity: 0, duration: 0.8, ease: 'power2.out',
+          opacity: 0, duration: 0.4, ease: 'power2.out',
           scrollTrigger: { trigger: bottom, start: 'top 95%', toggleActions: 'play none none reverse' },
         })
       }

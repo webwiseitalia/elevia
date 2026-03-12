@@ -116,3 +116,131 @@ a[href="#contatti"]:hover, button[type="submit"]:hover {
   background: #B8A46A;
   border-radius: 2px;
 }
+
+/* ═══════════════════════════════════════════
+   MOBILE RESPONSIVE (max-width: 768px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Benefits grid: 4 cols → 1 col ── */
+  .pe-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* ── Step rows: force image on top, content below ── */
+  .step-row {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .step-row .step-img {
+    order: 0 !important;
+  }
+  .step-row .step-content {
+    order: 1 !important;
+  }
+
+  /* ── PercheElevia section: reduce overlaps ── */
+  .section-pe {
+    margin-top: -100px !important;
+    padding-top: clamp(160px, 18vw, 260px) !important;
+    margin-bottom: -50px !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* ── TrustStrip section: reduce height & overlaps ── */
+  .section-ts {
+    min-height: 400px !important;
+    margin-top: -60px !important;
+    margin-bottom: -60px !important;
+  }
+
+  /* ── FAQ section: reduce clip cut on mobile ── */
+  .section-faq {
+    clip-path: polygon(0 3%, 100% 0, 100% 97%, 0 100%) !important;
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+
+  /* ── ComeFunziona: reduce clip on mobile ── */
+  .section-cf {
+    clip-path: polygon(0 0, 100% 0, 100% 97%, 0 100%) !important;
+    margin-bottom: -30px !important;
+  }
+
+  /* ── Contatti: reduce clip on mobile ── */
+  .section-ct {
+    clip-path: polygon(0 0, 100% 3%, 100% 100%, 0 100%) !important;
+    padding-top: 80px !important;
+  }
+
+  /* ── Footer bottom bar: center on mobile ── */
+  .ft-bottom {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+  }
+  .ft-bottom > div {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px !important;
+  }
+
+  /* ── Footer top section ── */
+  .ft-top {
+    margin-bottom: 36px !important;
+  }
+
+  /* ── Footer columns: center text on mobile ── */
+  .ft-col {
+    text-align: center;
+  }
+  .ft-col > div {
+    align-items: center;
+  }
+  .ft-col a {
+    justify-content: center;
+  }
+
+  /* ── Social icons in footer: center ── */
+  .ft-col > div[style*="flex"] {
+    justify-content: center;
+  }
+
+  /* ── CTA buttons: full width on small screens ── */
+  a[href="#contatti"],
+  button[type="submit"] {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* ── Form submit row ── */
+  .ct-field[style*="flex-wrap"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   TABLET (max-width: 1024px, min-width: 769px)
+   ═══════════════════════════════════════════ */
+@media (max-width: 1024px) and (min-width: 769px) {
+
+  /* ── Benefits grid: 2 cols on tablet ── */
+  .pe-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ── Reduce section overlaps slightly ── */
+  .section-pe {
+    margin-top: -150px !important;
+    padding-top: clamp(200px, 20vw, 340px) !important;
+  }
+
+  .section-ts {
+    min-height: 500px !important;
+    margin-top: -80px !important;
+    margin-bottom: -80px !important;
+  }
+}
